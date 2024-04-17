@@ -13,7 +13,7 @@
                 <img alt="image" src="{{ asset('assets/dist/img/avatar/staff.jpg') }}"
                     class="rounded-circle mr-1">
                 <div class="d-sm-none d-lg-inline-block mt-3" title="">
-                    </div>
+                    Hi, {{ auth()->user()->name}}!</div>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title"></div>

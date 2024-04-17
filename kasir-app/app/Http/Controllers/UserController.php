@@ -25,13 +25,16 @@ class UserController extends Controller
         //
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
+         
             if (Auth()->user()->role === 'admin') {
-                return redirect('/dashboard/user');
+                return redirect('/dashboard/user')->with('success', 'login berhasil');
+            } else {
+                return redirect('/dashboard/product');
             }
-            return redirect('/dashboard/product');
+            
         }
 
-        return back()->with('error', 'login failes');
+        return back()->with('err', 'login failed');
     }
     // function logout
     public function logout(){

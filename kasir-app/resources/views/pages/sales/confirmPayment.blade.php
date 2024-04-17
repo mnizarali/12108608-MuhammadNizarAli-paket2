@@ -16,7 +16,7 @@
                             <b>Nama</b>
                         </div>
                         <div class="col-sm-6 col-12">
-                            : 
+                            : {{ $name }}
                         </div>
                     </div>
                     <div class="row w-100 mb-3">
@@ -24,7 +24,7 @@
                             <b>Alamat</b>
                         </div>
                         <div class="col-sm-6 col-12">
-                            : 
+                            : {{ $address == null ? '-' : $address }}
                         </div>
                     </div>
                     <div class="row w-100 mb-3">
@@ -32,7 +32,7 @@
                             <b>No Phone</b>
                         </div>
                         <div class="col-sm-6 col-12">
-                            : 
+                            : {{ $phone }}
                         </div>
                     </div>
                 </div>
@@ -50,43 +50,44 @@
                             <b>Harga:</b>
                         </div>
                     </div>
-
-
-
+                    @php
+                        $totalPrice = 0;
+                    @endphp
+                    @foreach ($produks as $produk)
                         <div class="row w-100 mb-3">
                             <div class="col-sm-6 col-12">
-
-                        </div>
+                                - {{ $produk->name }} (Rp{{ number_format($produk->price, 2, ',', '.') }})
+                            </div>
                             <div class="col-sm-6 col-12">
-                              
-
-
-
-
-
-
-
-
-
+                                @foreach ($products as $p)
+                                    @if ($p['code'] == $produk->code)
+                                        @php
+                                            $price = $p['qty'] * $produk->price;
+                                            $totalPrice += $price;
+                                            $harga = $produk->price;
+                                        @endphp
+                                        {{ $p['qty'] }} x (Rp{{ number_format($harga, 2, ',', '.') }})
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
-
+                    @endforeach
 
                     <div class="row w-100 mb-3">
                         <div class="col-sm-6 col-12">
                             <b>Total Dibayar:</b>
                         </div>
                         <div class="col-sm-6 col-12">
-
+                            Rp{{ number_format($totalPrice, 2, ',', '.') }}
                         </div>
                     </div>
                 </div>
 
                 <div class="card-footer">
                     <form action="" method="post">
-                        
-                        <a href=""  class="btn btn-success">Return to Menu</a>
-                        <a href="" target="_blank" class="btn btn-danger">Cetak Struk</a>
+                        @csrf
+                        <a href="{{ route('dashboard.sales.back')}}"  class="btn btn-success">Return to Menu</a>
+                        <a href="{{ route('dashboard.sales.invoice') }}" target="_blank" class="btn btn-danger">Cetak Struk</a>
                     </form>
                 </div>
             </div>

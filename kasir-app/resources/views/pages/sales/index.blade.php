@@ -1,37 +1,38 @@
 @extends('layout.dashboard')
 @section('title', 'Pembelian')
 @section('content')
-
+@if (session('success'))
 <div class="alert alert-success alert-dismissible show fade">
     <div class="alert-body">
         <button class="close" data-dismiss="alert">
             <span>&times;</span>
         </button>
         <b>Success:</b>
-
+        {{ session('success') }}
     </div>
 </div>
-
-
+@endif
+@if (session('fail'))
 <div class="alert alert-danger alert-dismissible show fade">
     <div class="alert-body">
         <button class="close" data-dismiss="alert">
             <span>&times;</span>
         </button>
         <b>Fail:</b>
-
-        
-        <b></b>,
-
+        Produk dengan kode
+        @foreach (session('fail') as $code)
+        <b>{{ $code }}</b>,
+        @endforeach
         tidak tersedia
     </div>
 </div>
-
+@endif
 <div class="p-2">
     <h6 class="font-weight-light">Dashboard / Pembelian / <span class="font-weight-bold"> Transaction Form </span></h6>
 </div>
 <div class="container">
-    <form action="" method="POST" class="needs-validation" novalidate>
+    <!-- kasih route untuk confirm payment ini -->
+    <form action="{{ route('dashboard.sales.confirmpayment')}}" method="POST" class="needs-validation" novalidate>
         @csrf
         <div class="row">
             <div class="col-12">
@@ -40,15 +41,15 @@
                         <div class="row">
                             <div class="form-group col-md-6 col-12">
                                 <label for="nama">Name Customer <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" name="" id="nama">
+                                <input class="form-control" type="text" name="name" id="nama">
                             </div>
                             <div class="form-group col-md-6 col-12">
                                 <label for="telp">No Phone <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" name="" id="telp">
+                                <input class="form-control" type="text" name="phone" id="telp">
                             </div>
                             <div class="form-group col-md-12 col-12">
                                 <label for="alamat">Customer Address <span class="text-danger">*</span></label>
-                                <textarea name="" id="alamat" class="form-control"></textarea>
+                                <textarea name="address" id="alamat" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
@@ -64,16 +65,16 @@
                     <div class="row">
                         <div class="form-group col-md-6 col-12">
                             <label for="product">Select Product</label>
-                            <select class="form-control" name="" id="product">
+                            <select class="form-control" name="code[]" id="product">
                                 <option value="">Select Product</option>
-
-                                <option value=""></option>
-
+                                @foreach($products as $product)
+                                <option value="{{ $product->code }}">{{ $product->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group col-md-6 col-12">
                             <label for="jumlah">Jumlah</label>
-                            <input class="form-control" type="text" name="" required>
+                            <input class="form-control" type="text" name="quantity[]" required>
                         </div>
                         <div class="form-group col-12">
                             <button type="button" class="btn btn-danger" onclick="removeProductInput(this)">Cancel</button>
@@ -115,10 +116,10 @@
 <script>
     function addProductInput() {
         var productInputs = document.getElementById('productInputs');
-        var newProductInputs = productInputs.cloneNode(true); 
-        productInputs.parentElement.appendChild(newProductInputs); 
+        var newProductInputs = productInputs.cloneNode(true); // Clone the entire div with id "productInputs"
+        productInputs.parentElement.appendChild(newProductInputs); // Append the cloned div to its parent
         newProductInputs.querySelectorAll('input').forEach(function(input) {
-            input.value = ''; 
+            input.value = ''; // Clear input values in the cloned div
         });
     }
 
